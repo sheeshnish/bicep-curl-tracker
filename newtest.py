@@ -2,12 +2,10 @@ import cv2
 import mediapipe as mp
 import numpy as np  
 
-# Initialize MediaPipe Pose
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-# 1. Try changing the index to 0, 1, or -1 if your camera doesn't load
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # CAP_DSHOW forces direct video show on Windows to prevent freezing
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  
 
 if not cap.isOpened():
     print("Error: Could not open webcam. Try changing VideoCapture(0) to VideoCapture(1)")
@@ -34,13 +32,9 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         if not ret:
             print("Failed to grab frame.")
             continue
-            
-        # Flip and get dimensions
         frame = cv2.flip(frame, 1)  
         h, w, _ = frame.shape
 
-        # MediaPipe requires RGB, OpenCV uses BGR. 
-        # Making a clean copy prevents memory locking issues.
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = pose.process(rgb_frame)
 
@@ -83,7 +77,6 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 print(rep_state, counter)
 
             except Exception as e:
-                # Print the error to your console so you know exactly what failed inside the math
                 print(f"Tracking error: {e}")
         else:
             # If the model doesn't see a human body, it will print this continuously
